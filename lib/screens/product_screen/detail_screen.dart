@@ -1,20 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/auth/auth_service.dart';
 import 'package:flutter_shop_app/provider/product_provider.dart';
-import 'package:flutter_shop_app/screens/product_screen/cart_screen.dart';
-
 import 'package:flutter_shop_app/widget/detail_screen/content.dart';
-
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 
+import '../../model/product.dart';
 import '../../provider/create_router.dart';
 import '../../ui/text.dart';
 import '../../widget/detail_screen/bottom.dart';
 
 class DetailScreen extends StatefulWidget {
-  DocumentSnapshot product;
+  Product product;
   DetailScreen({super.key, required this.product});
 
   @override
@@ -42,7 +37,7 @@ class _DetailScreenState extends State<DetailScreen> {
               color: Colors.black,
             )),
         title: Text(
-          widget.product['nameProduct'],
+          widget.product.nameProduct,
           style: MyTextStyle().textAppbar,
         ),
         centerTitle: true,

@@ -1,7 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_shop_app/auth/email_pass.dart';
 import 'package:flutter_shop_app/ui/color.dart';
 import 'package:flutter_shop_app/ui/text.dart';
@@ -53,13 +51,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: MyTextStyle().textSubRegister,
                   ),
                   TextInput(
-                    faIcon: 'images/email.png',
+                    icon: Icons.mail,
                     textEditingController: textEmailController,
                     hintText: 'Email',
                     isShowPass: false,
                   ),
                   TextInput(
-                    faIcon: 'images/lock.png',
+                    icon: Icons.lock,
                     textEditingController: textPassWordController,
                     hintText: 'Password',
                     isShowPass: isShowPass,
@@ -75,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: colorGreen),
                   ),
                   TextInput(
-                    faIcon: 'images/lock.png',
+                    icon: Icons.lock,
                     textEditingController: textRePassController,
                     hintText: 'Re password',
                     isShowPass: isShowPass,

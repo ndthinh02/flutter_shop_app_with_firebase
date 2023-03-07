@@ -1,13 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_shop_app/model/product.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FavoriteProvider extends ChangeNotifier {
   bool isLoading = true;
-  void addProductToFavorite(bool isFavorite, String name, num price,
-      String image, String idFavorite, BuildContext context) async {
+  void addProductToFavorite(
+      bool isFavorite,
+      String name,
+      num price,
+      String image,
+      String idFavorite,
+      BuildContext context,
+      num priceOld,
+      String description,
+      num quantity,
+      num rateStar) async {
     // DialogProvider().showDialogLoading(context);
     FirebaseFirestore.instance
         .collection("Favorite")
@@ -21,6 +30,10 @@ class FavoriteProvider extends ChangeNotifier {
       "image": image,
       "idFavorite": idFavorite,
       "isFavorite": true,
+      "priceOld": priceOld,
+      "description": description,
+      "quantity": quantity,
+      "rateStar": rateStar
     });
 
     notifyListeners();
@@ -32,32 +45,35 @@ class FavoriteProvider extends ChangeNotifier {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("YourFavorite")
         .doc(idFavorite)
-        .delete();
+        .delete()
+        .whenComplete(
+            () => Fluttertoast.showToast(msg: "Remove succesfully !"));
   }
 
   List<Product> _listFavortie = [];
   Future<void> getDataFavorite() async {
     isLoading = true;
-    List<Product> _newList = [];
+    List<Product> newList = [];
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("Favorite")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("YourFavorite")
         .get()
         .whenComplete(() => isLoading = false);
-    querySnapshot.docs.forEach((element) {
+    for (var element in querySnapshot.docs) {
       Product product = Product(
-          nameProduct: element.get("nameFavorite"),
-          price: element.get("price") ?? 0,
-          image: element.get("image"),
-          description: "",
-          priceOld: 2,
-          quantity: 1,
-          id: element.get("idFavorite"));
-      _newList.add(product);
-    });
-    _listFavortie = _newList;
-    print('dksandsjdn${_listFavortie}');
+        nameProduct: element.get("nameFavorite"),
+        price: element.get("price") ?? 0,
+        image: element.get("image"),
+        description: element.get("description"),
+        priceOld: element.get("priceOld"),
+        quantity: element.get("quantity"),
+        rateStar: element.get("rateStar"),
+        id: element.get("idFavorite"),
+      );
+      newList.add(product);
+    }
+    _listFavortie = newList;
     notifyListeners();
   }
 

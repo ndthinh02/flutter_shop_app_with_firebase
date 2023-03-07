@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_shop_app/provider/favorite_provider.dart';
-import 'package:flutter_shop_app/ui/color.dart';
 import 'package:flutter_shop_app/ui/text.dart';
+import 'package:flutter_shop_app/widget/item_favorite.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/create_router.dart';
@@ -19,6 +17,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   CreateRouter get createRouterProvider => context.read<CreateRouter>();
   FavoriteProvider get readFavorite => context.read<FavoriteProvider>();
   FavoriteProvider get watchdFavorite => context.read<FavoriteProvider>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,25 +56,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               return const CircularProgressIndicator();
             }
             if (value.getListFavorite.isEmpty) {
-              return Text('deo co gi ca');
+              return const Center(child: Text('No Favorite'));
             }
             return ListView.builder(
               itemCount: readFavorite.getListFavorite.length,
               itemBuilder: (context, index) {
                 final data = watchdFavorite.getListFavorite[index];
 
-                return ListTile(
-                  trailing: IconButton(
-                    onPressed: () {
-                      readFavorite.removeFavorite(data.id!);
-                    },
-                    icon: Icon(Icons.delete),
-                  ),
-                  leading: Icon(Icons.abc),
-                  title: Text(
-                    data.nameProduct,
-                    style: TextStyle(color: Colors.black),
-                  ),
+                return FavoriteItem(
+                  product: data,
                 );
               },
             );

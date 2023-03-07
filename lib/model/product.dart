@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Product extends ChangeNotifier {
@@ -10,6 +9,7 @@ class Product extends ChangeNotifier {
   num quantity;
   String id;
   num? rateStar;
+  num? type;
 
   Product(
       {required this.nameProduct,
@@ -19,5 +19,6 @@ class Product extends ChangeNotifier {
       required this.priceOld,
       required this.quantity,
       this.rateStar,
+      this.type,
       required this.id});
 }

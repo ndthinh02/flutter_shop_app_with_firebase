@@ -6,7 +6,6 @@ class CategoryProduct extends ChangeNotifier {
   int? selectedIndex;
   CategoryProduct({required this.name, required this.icon, this.selectedIndex});
   void changeColorSelected(int index) {
-    print('object${index}');
     selectedIndex = index;
     notifyListeners();
   }
@@ -22,27 +21,11 @@ List<CategoryProduct> listCategoryProduct = [
     icon: (Icons.laptop_outlined),
   ),
   CategoryProduct(
-    name: 'Book',
+    name: 'Headphones',
     icon: (Icons.book_online_outlined),
   ),
   CategoryProduct(
-    name: 'Healthy',
-    icon: (Icons.favorite_border_outlined),
-  ),
-  CategoryProduct(
-    name: 'Phone',
-    icon: (Icons.smartphone_outlined),
-  ),
-  CategoryProduct(
-    name: 'Laptop',
-    icon: (Icons.laptop_outlined),
-  ),
-  CategoryProduct(
-    name: 'Book',
-    icon: (Icons.book_online_outlined),
-  ),
-  CategoryProduct(
-    name: 'Healthy',
-    icon: (Icons.favorite_border_outlined),
+    name: 'Mouse',
+    icon: (Icons.mouse),
   ),
 ];

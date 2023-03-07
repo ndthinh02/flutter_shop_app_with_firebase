@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/screens/product_screen/detail_screen.dart';
 import 'package:flutter_shop_app/widget/grird_item.dart';
-
 import 'package:provider/provider.dart';
 
 import '../../model/category.dart';
@@ -21,9 +18,9 @@ class BestSeller extends StatefulWidget {
 }
 
 class _BestSellerState extends State<BestSeller> {
-  final CollectionReference product =
-      FirebaseFirestore.instance.collection('Product');
-  ProductProvider get read => context.read<ProductProvider>();
+  // final CollectionReference product =
+  //     FirebaseFirestore.instance.collection('Product');
+  // ProductProvider get read => context.read<ProductProvider>();
 
   CategoryProvider get categoryProvider => context.read<CategoryProvider>();
   CategoryProduct get readCategory => context.read<CategoryProduct>();
@@ -61,6 +58,7 @@ class _BestSellerState extends State<BestSeller> {
                         child: GestureDetector(
                           onTap: () {
                             readCategory.changeColorSelected(index);
+                            productProvider.getProductByType(index);
                           },
                           child: CategoryWidget(
                             color: watch.selectedIndex == index
@@ -77,15 +75,26 @@ class _BestSellerState extends State<BestSeller> {
                         ))),
               )),
           const SizedBox(height: 10),
-          StreamBuilder(
-              stream: product.snapshots(),
-              builder: ((context, snapshot) {
-                if (snapshot.hasData) {
-                  return GridItem(snapshot: snapshot);
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              }))
+          Consumer<ProductProvider>(
+            builder: (context, provider, _) {
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 300,
+                    mainAxisExtent: 200,
+                    childAspectRatio: 3 / 3,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20),
+                itemCount: productProvider.getListProduct.length,
+                itemBuilder: ((context, index) {
+                  final product = productProvider.getListProduct[index];
+
+                  return GridItem(product: product);
+                }),
+              );
+            },
+          )
         ],
       ),
     );

@@ -1,20 +1,16 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_shop_app/model/product.dart';
 import 'package:flutter_shop_app/provider/favorite_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
-import '../../provider/product_provider.dart';
 import '../../ui/text.dart';
 
 class Content extends StatefulWidget {
-  DocumentSnapshot product;
+  Product product;
+
   Content({super.key, required this.product});
 
   @override
@@ -46,10 +42,13 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     getFavoriteListBool();
-    String description = widget.product['description'];
+    String description = widget.product.description;
     return Column(
       children: [
-        Image.network(widget.product['image']),
+        Image.network(
+          widget.product.image,
+          height: MediaQuery.of(context).size.height / 2,
+        ),
         const SizedBox(height: 20),
         Container(
           decoration: BoxDecoration(
@@ -69,14 +68,14 @@ class _ContentState extends State<Content> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.product['nameProduct'],
+                  widget.product.nameProduct,
                   style: MyTextStyle().titleText,
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
                     Text(
-                      "\$ ${widget.product['price']}",
+                      "\$ ${widget.product.price}",
                       style: MyTextStyle().textPriceDetail,
                     ),
                     IconButton(
@@ -87,14 +86,18 @@ class _ContentState extends State<Content> {
                             if (_isFavorite == true) {
                               readFavorite.addProductToFavorite(
                                   _isFavorite,
-                                  widget.product['nameProduct'],
-                                  widget.product['price'],
-                                  widget.product['image'],
-                                  widget.product['productId'],
-                                  context);
+                                  widget.product.nameProduct,
+                                  widget.product.price,
+                                  widget.product.image,
+                                  widget.product.id,
+                                  context,
+                                  widget.product.priceOld,
+                                  widget.product.description,
+                                  widget.product.quantity,
+                                  3);
                             } else {
-                              readFavorite
-                                  .removeFavorite(widget.product['productId']);
+                              readFavorite.getDataFavorite();
+                              readFavorite.removeFavorite(widget.product.id);
                             }
                           });
                         },
@@ -124,7 +127,7 @@ class _ContentState extends State<Content> {
                   children: [
                     Wrap(
                       children: List.generate(
-                          widget.product['rateStar'],
+                          widget.product.rateStar!.toInt(),
                           (index) => const Icon(
                                 Icons.star,
                                 size: 14,

@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/model/category.dart';
 import 'package:flutter_shop_app/model/product.dart';
-import 'package:flutter_shop_app/provider/category_provider.dart';
 import 'package:flutter_shop_app/provider/create_router.dart';
-import 'package:flutter_shop_app/provider/product_provider.dart';
-import 'package:flutter_shop_app/screens/product_screen/cart_screen.dart';
 import 'package:flutter_shop_app/ui/text.dart';
-
 import 'package:lottie/lottie.dart';
-
 import 'package:provider/provider.dart';
 
-import '../../ui/color.dart';
 import '../../widget/home_screen/banner.dart';
 import '../../widget/home_screen/best_seller.dart';
 
@@ -74,63 +67,24 @@ class _MyHomePageState extends State<HomeScreen> {
         backgroundColor: const Color(0xFFF8F8F8),
         body: Container(
           padding: const EdgeInsets.all(14),
-          child: Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  LottieBuilder.network(
-                      'https://assets1.lottiefiles.com/packages/lf20_puciaact.json'),
-                  Form(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          suffixIcon: SizedBox(
-                            width: 85,
-                            height: 60,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              margin: EdgeInsets.only(right: 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: colorMain,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
-                                onPressed: () {
-                                  print('object');
-                                },
-                                child: const Align(
-                                    alignment: Alignment.center,
-                                    child: Icon(Icons.filter_alt_outlined)),
-                              ),
-                            ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.search_outlined,
-                            color: Colors.red,
-                          ),
-                          enabledBorder: outlineInputBorder,
-                          focusedBorder: outlineInputBorder,
-                          fillColor: Colors.white,
-                          border: outlineInputBorder,
-                          filled: true,
-                          hintText: 'Search product ',
-                          hintStyle: MyTextStyle().textSeacrh),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                LottieBuilder.network(
+                    'https://assets1.lottiefiles.com/packages/lf20_puciaact.json'),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                      'Hot Sales',
+                      style: MyTextStyle().titleText,
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Text(
-                        'Hot Sales',
-                        style: MyTextStyle().titleText,
-                      ),
-                    ],
-                  ),
-                  const BannerHomePage(),
-                  BestSeller(),
-                ],
-              ),
+                  ],
+                ),
+                const BannerHomePage(),
+                const BestSeller(),
+              ],
             ),
           ),
         ));

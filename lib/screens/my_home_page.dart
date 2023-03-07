@@ -1,15 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/auth/auth_service.dart';
 import 'package:flutter_shop_app/model/category.dart';
 import 'package:flutter_shop_app/provider/category_provider.dart';
 import 'package:flutter_shop_app/provider/product_provider.dart';
 import 'package:flutter_shop_app/screens/bottom_nav/home_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+
 import '../ui/color.dart';
-import 'product_screen/cart_screen.dart';
 import 'bottom_nav/favorite_screen.dart';
 import 'bottom_nav/profile_screen.dart';
 import 'bottom_nav/search_screen.dart';
@@ -38,9 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var outlineInputBorder = OutlineInputBorder(
-        borderSide: BorderSide.none, borderRadius: BorderRadius.circular(40));
-    List<Widget> _widgetOption = <Widget>[
+    List<Widget> widgetOption = <Widget>[
       HomeScreen(title: ''),
       const SearchScreen(),
       const FavoriteScreen(),
@@ -48,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
-      body: _widgetOption.elementAt(pageIndex),
+      body: widgetOption.elementAt(pageIndex),
       bottomNavigationBar: buildMyNavBar(context),
     );
   }
@@ -90,7 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: (Icons.favorite_outline),
                 text: 'Favorite',
               ),
-              const GButton(
+              GButton(
+                onPressed: () {
+                  // UserProvider userProvider;
+                  // userProvider =
+                  //     Provider.of<UserProvider>(context, listen: false);
+                  // userProvider.getUserData();
+                },
                 icon: (Icons.person_outline_outlined),
                 text: 'Profile',
               ),

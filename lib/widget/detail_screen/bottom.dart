@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_shop_app/model/product.dart';
 import 'package:provider/provider.dart';
 
 import '../../auth/auth_service.dart';
@@ -11,7 +8,7 @@ import '../../ui/color.dart';
 import '../../ui/text.dart';
 
 class Bottom extends StatefulWidget {
-  DocumentSnapshot product;
+  Product product;
   Bottom({super.key, required this.product});
 
   @override
@@ -41,12 +38,13 @@ class _BottomState extends State<Bottom> {
                   backgroundColor: colorMain),
               onPressed: () {
                 AuthService().checkUserAfterBuy(
-                    context,
-                    widget.product['nameProduct'],
-                    widget.product['price'],
-                    productProvier.quantity,
-                    widget.product['image'],
-                    widget.product['productId']);
+                  context,
+                  widget.product.nameProduct,
+                  widget.product.price,
+                  productProvier.quantity,
+                  widget.product.image,
+                  widget.product.id,
+                );
               },
               child: GestureDetector(
                 child: Text(

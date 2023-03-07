@@ -1,17 +1,11 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/main.dart';
-import 'package:flutter_shop_app/screens/product_screen/cart_screen.dart';
+import 'package:flutter_shop_app/provider/user_provider.dart';
 import 'package:flutter_shop_app/screens/bottom_nav/profile_screen.dart';
 import 'package:flutter_shop_app/screens/login/login.dart';
 import 'package:flutter_shop_app/screens/my_home_page.dart';
-import 'package:flutter_shop_app/screens/product_screen/pay_screen.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../dialog/dialog.dart';
@@ -30,16 +24,20 @@ class AuthService {
           //   return CircularProgressIndicator();
           // }
           if (snapshot.hasData) {
-            return MyHomePage(
+            return const MyHomePage(
               title: '',
             );
           } else {
-            return const LoginScreen();
+            return LoginScreen(
+              email: '',
+              pass: '',
+            );
           }
         });
   }
 
   signInWithGoogle(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     DialogProvider().showDialogLoading(context);
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser =
@@ -59,16 +57,20 @@ class AuthService {
     return await FirebaseAuth.instance
         .signInWithCredential(credential)
         .whenComplete(() => Navigator.of(context).pop())
-        .whenComplete(() =>
-            navigatorKey.currentState!.popUntil((route) => route.isFirst));
+        .whenComplete(
+            () => navigatorKey.currentState!.popUntil((route) => route.isFirst))
+        .whenComplete(() => userProvider.addUser(
+            FirebaseAuth.instance.currentUser!.email,
+            FirebaseAuth.instance.currentUser!.photoURL,
+            FirebaseAuth.instance.currentUser!.uid))
+        .whenComplete(() => userProvider.getUserData());
   }
 
   signOut(BuildContext context) async {
     DialogProvider().showDialogLoading(context);
-    await FirebaseAuth.instance.signOut().whenComplete(() =>
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (ctx) => LoginScreen())));
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    await FirebaseAuth.instance
+        .signOut()
+        .whenComplete(() => Navigator.of(context).pop());
   }
 
   checkUser(BuildContext context) {
@@ -92,8 +94,11 @@ class AuthService {
   checkUserAfterBuy(BuildContext context, String name, num price, num quantity,
       String image, String productId) {
     if (firebaseAuth == null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (ctx) => const LoginScreen()));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => LoginScreen(
+                email: '',
+                pass: '',
+              )));
     } else {
       showModalBottom(name, price, quantity, image, productId, context);
     }
@@ -150,7 +155,7 @@ class AuthService {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                '\$ ${price}'.toString(),
+                                '\$ $price'.toString(),
                                 style: MyTextStyle().textPrice,
                               ),
                               Row(
@@ -163,15 +168,13 @@ class AuthService {
                                       onPressed: () {
                                         value.subQuantity();
                                       },
-                                      icon: const Icon(
-                                          Icons.remove_circle_outline_rounded)),
+                                      icon: const Icon(Icons.remove, size: 14)),
                                   Text('${value.quantity}'),
                                   IconButton(
                                       onPressed: () {
                                         value.addQuantity();
                                       },
-                                      icon: const Icon(
-                                          Icons.add_circle_outline_outlined)),
+                                      icon: const Icon(Icons.add, size: 14)),
                                 ],
                               ),
                             ],

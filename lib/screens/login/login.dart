@@ -1,16 +1,9 @@
-import 'dart:math';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/auth/email_pass.dart';
 import 'package:flutter_shop_app/provider/create_router.dart';
-import 'package:flutter_shop_app/screens/login/register.dart';
-import 'package:flutter_shop_app/screens/my_home_page.dart';
 import 'package:flutter_shop_app/value/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +13,9 @@ import '../../ui/text.dart';
 import '../../ui/text_input.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  String email;
+  String pass;
+  LoginScreen({super.key, required this.email, required this.pass});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -34,7 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isShowPass = true;
   CreateRouter get createRouter => context.read<CreateRouter>();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    textEmailController.text = widget.email;
+    textPassWordController.text = widget.pass;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('emailll ${widget.email}');
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -67,14 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextInput(
+                        icon: Icons.mail,
                         textInputType: TextInputType.emailAddress,
-                        faIcon: 'images/email.png',
                         textEditingController: textEmailController,
                         hintText: 'Email',
                         isShowPass: false,
                       ),
                       TextInput(
-                        faIcon: 'images/lock.png',
+                        icon: Icons.lock,
                         textEditingController: textPassWordController,
                         hintText: 'Password',
                         isShowPass: isShowPass,
@@ -82,7 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               setState(() {
                                 isShowPass = !isShowPass;
-                                print('onsadnasdns${isShowPass}');
                               });
                             },
                             icon: Icon(
@@ -114,11 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               if (textEmailController.text.isEmpty ||
                                   textPassWordController.text.isEmpty) {
-                                Fluttertoast.showToast(msg: 'Khong dc torng');
+                                Fluttertoast.showToast(msg: 'Not empty');
                               } else if (!EmailValidator.validate(
                                   textEmailController.text, true)) {
-                                Fluttertoast.showToast(
-                                    msg: 'Email nhu cai con caac');
+                                Fluttertoast.showToast(msg: 'Email invalid');
                               } else {
                                 SignWithEmail().signInWithEmail(
                                     textEmailController.text.trim(),

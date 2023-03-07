@@ -1,23 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/provider/create_router.dart';
 import 'package:flutter_shop_app/screens/login/login.dart';
-import 'package:flutter_shop_app/value/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 import '../dialog/dialog.dart';
 import '../main.dart';
-import '../screens/my_home_page.dart';
+import '../provider/user_provider.dart';
 
 class SignWithEmail {
   Future<void> signInWithEmail(
       String email, String pass, BuildContext context) async {
     DialogProvider().showDialogLoading(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: pass);
+          .signInWithEmailAndPassword(email: email, password: pass)
+          .whenComplete(() => userProvider.getUserData())
+          .whenComplete(() =>
+              navigatorKey.currentState!.popUntil((route) => route.isFirst));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Fluttertoast.showToast(msg: "No found user for email");
@@ -25,19 +26,30 @@ class SignWithEmail {
         Fluttertoast.showToast(msg: "Wrong email or password");
       }
     }
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   Future<void> signUpUser(
       String email, String password, BuildContext context) async {
     DialogProvider().showDialogLoading(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
             email: email,
             password: password,
           )
-          .whenComplete(() => Navigator.of(context).pop());
+          .whenComplete(() => userProvider.addUser(
+              email,
+              FirebaseAuth.instance.currentUser!.photoURL,
+              FirebaseAuth.instance.currentUser!.uid))
+          .whenComplete(() => Navigator.of(context).pop())
+          .whenComplete(() => userProvider.getUserData())
+          .whenComplete(
+              () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: ((context) => LoginScreen(
+                        email: email,
+                        pass: password,
+                      )))));
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
